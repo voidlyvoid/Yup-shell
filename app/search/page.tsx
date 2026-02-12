@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input'
 import { questionsData } from '@/lib/questions-data'
 import { Search, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { useState, useEffect, useMemo } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useMemo, Suspense } from 'react'
 
-export default function SearchPage() {
+function SearchContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') || ''
   const [searchQuery, setSearchQuery] = useState(initialQuery)
@@ -30,7 +31,9 @@ export default function SearchPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // URL will update via useSearchParams
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
+    }
   }
 
   return (
@@ -119,5 +122,27 @@ export default function SearchPage() {
         </div>
       </footer>
     </div>
+  )
+}
+
+function SearchPageLoading() {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <section className="bg-gradient-to-br from-primary/10 to-accent/10 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-10 bg-gray-200 rounded animate-pulse mb-6"></div>
+          <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchPageLoading />}>
+      <SearchContent />
+    </Suspense>
   )
 }

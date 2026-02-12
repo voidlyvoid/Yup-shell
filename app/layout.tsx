@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 
 import './globals.css'
@@ -9,11 +9,12 @@ export const metadata: Metadata = {
   title: 'Better Physics Shell | Class 12 CBSE Physics Questions & Solutions',
   description: 'Master Class 12 CBSE Physics with comprehensive predicted questions, detailed solutions, and interactive learning. Find answers to all topics with expert explanations.',
   keywords: ['CBSE Physics', 'Class 12', 'Physics Questions', 'Exam Prep', 'Board Exam'],
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
