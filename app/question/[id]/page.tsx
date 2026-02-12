@@ -5,15 +5,26 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { questionsData, Question } from '@/lib/questions-data'
+import { comprehensiveQuestions } from '@/lib/comprehensive-questions'
+import { extendedQuestionsSet1 } from '@/lib/extended-questions-1'
+import { extendedQuestionsSet2 } from '@/lib/extended-questions-2'
+import { extendedQuestionsSet3 } from '@/lib/extended-questions-3'
+import { importantQuestions } from '@/lib/important-questions'
 import { Bookmark, BookmarkCheck, ChevronLeft, Eye, Target, Lightbulb } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 export default function QuestionDetailPage() {
   const params = useParams()
   const id = parseInt(params.id as string)
-  const question = questionsData.find(q => q.id === id)
+  
+  // Combine all questions
+  const allQuestions = useMemo(() => {
+    return [...questionsData, ...comprehensiveQuestions, ...extendedQuestionsSet1, ...extendedQuestionsSet2, ...extendedQuestionsSet3, ...importantQuestions]
+  }, [])
+  
+  const question = allQuestions.find(q => q.id === id)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const [viewCount, setViewCount] = useState(0)
@@ -74,7 +85,7 @@ export default function QuestionDetailPage() {
   }
 
   // Get related questions
-  const relatedQuestions = questionsData
+  const relatedQuestions = allQuestions
     .filter(q => q.topic === question.topic && q.id !== question.id)
     .slice(0, 3)
 

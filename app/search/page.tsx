@@ -1,148 +1,15 @@
-'use client'
-
 import { Header } from '@/components/header'
-import { QuestionCard } from '@/components/question-card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { questionsData } from '@/lib/questions-data'
-import { Search, ChevronLeft } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, useMemo, Suspense } from 'react'
-
-function SearchContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const initialQuery = searchParams.get('q') || ''
-  const [searchQuery, setSearchQuery] = useState(initialQuery)
-
-  const results = useMemo(() => {
-    if (!searchQuery.trim()) return []
-    
-    const query = searchQuery.toLowerCase()
-    return questionsData.filter(q =>
-      q.question_stem.toLowerCase().includes(query) ||
-      q.topic.toLowerCase().includes(query) ||
-      q.subtopic.toLowerCase().includes(query) ||
-      q.answer_outline.some(outline => outline.toLowerCase().includes(query)) ||
-      q.full_solution.toLowerCase().includes(query)
-    )
-  }, [searchQuery])
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
-    }
-  }
-
-  return (
-    <div className="min-h-screen">
-      <Header />
-
-      {/* Page Header */}
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/questions"
-            className="inline-flex items-center gap-2 text-primary hover:text-accent transition-colors mb-6"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </Link>
-
-          <h1 className="text-4xl font-bold mb-6">Search Results</h1>
-
-          {/* Search Box */}
-          <form onSubmit={handleSearch}>
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Search questions, topics, concepts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 h-12 rounded-lg border border-primary/20 focus:border-primary text-lg"
-                autoFocus
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            </div>
-          </form>
-        </div>
-      </section>
-
-      {/* Results */}
-      <section className="py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {searchQuery.trim() ? (
-            <>
-              <p className="text-lg text-foreground/60 mb-8">
-                Found {results.length} {results.length === 1 ? 'result' : 'results'} for "{searchQuery}"
-              </p>
-
-              {results.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {results.map((question) => (
-                    <QuestionCard key={question.id} question={question} />
-                  ))}
-                </div>
-              ) : (
-                <div className="py-12 text-center">
-                  <Search className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold text-foreground mb-2">No results found</h2>
-                  <p className="text-foreground/60 mb-6">Try searching for different keywords or browse by topic</p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/questions">
-                      <Button variant="outline" className="border-primary/20">
-                        Browse All Questions
-                      </Button>
-                    </Link>
-                    <Link href="/topics">
-                      <Button className="bg-gradient-to-r from-primary to-accent">
-                        Explore Topics
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="py-12 text-center">
-              <Search className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-foreground mb-2">Start Searching</h2>
-              <p className="text-foreground/60">Enter keywords to search through questions and topics</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-12 border-t border-primary/10 bg-white mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-foreground/60">
-          <p>Better Physics Shell © 2024 | Comprehensive CBSE Class 12 Physics Question Bank</p>
-        </div>
-      </footer>
-    </div>
-  )
-}
-
-function SearchPageLoading() {
-  return (
-    <div className="min-h-screen">
-      <Header />
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="h-10 bg-gray-200 rounded animate-pulse mb-6"></div>
-          <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
-        </div>
-      </section>
-    </div>
-  )
-}
+import { Suspense } from 'react'
+import SearchPageContent from './search-content'
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<SearchPageLoading />}>
-      <SearchContent />
-    </Suspense>
+    <div className="min-h-screen">
+      <Header />
+      <Suspense fallback={<div className="py-12 text-center">Loading search...</div>}>
+        <SearchPageContent />
+      </Suspense>
+
+    </div>
   )
 }
