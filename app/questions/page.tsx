@@ -12,6 +12,7 @@ import { extendedQuestionsSet1 } from '@/lib/extended-questions-1'
 import { extendedQuestionsSet2 } from '@/lib/extended-questions-2'
 import { extendedQuestionsSet3 } from '@/lib/extended-questions-3'
 import { importantQuestions } from '@/lib/important-questions'
+import { getCombinedQuestions } from '@/lib/utils'
 import { Search } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 
@@ -28,9 +29,16 @@ export default function QuestionsPage() {
     setIsLoading(false)
   }, [])
 
-  // Combine all questions
+  // Combine all questions with offset IDs
   const allQuestions = useMemo(() => {
-    return [...questionsData, ...comprehensiveQuestions, ...extendedQuestionsSet1, ...extendedQuestionsSet2, ...extendedQuestionsSet3, ...importantQuestions]
+    return getCombinedQuestions(
+      questionsData,
+      comprehensiveQuestions,
+      extendedQuestionsSet1,
+      extendedQuestionsSet2,
+      extendedQuestionsSet3,
+      importantQuestions
+    )
   }, [])
 
   const filteredQuestions = useMemo(() => {

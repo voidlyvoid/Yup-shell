@@ -10,6 +10,7 @@ import { extendedQuestionsSet1 } from '@/lib/extended-questions-1'
 import { extendedQuestionsSet2 } from '@/lib/extended-questions-2'
 import { extendedQuestionsSet3 } from '@/lib/extended-questions-3'
 import { importantQuestions } from '@/lib/important-questions'
+import { getCombinedQuestions } from '@/lib/utils'
 import { Bookmark, BookmarkCheck, ChevronLeft, Eye, Target, Lightbulb } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -19,9 +20,16 @@ export default function QuestionDetailPage() {
   const params = useParams()
   const id = parseInt(params.id as string)
   
-  // Combine all questions
+  // Combine all questions with offset IDs
   const allQuestions = useMemo(() => {
-    return [...questionsData, ...comprehensiveQuestions, ...extendedQuestionsSet1, ...extendedQuestionsSet2, ...extendedQuestionsSet3, ...importantQuestions]
+    return getCombinedQuestions(
+      questionsData,
+      comprehensiveQuestions,
+      extendedQuestionsSet1,
+      extendedQuestionsSet2,
+      extendedQuestionsSet3,
+      importantQuestions
+    )
   }, [])
   
   const question = allQuestions.find(q => q.id === id)

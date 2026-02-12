@@ -4,6 +4,12 @@ import { QuestionCard } from '@/components/question-card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { questionsData } from '@/lib/questions-data'
+import { comprehensiveQuestions } from '@/lib/comprehensive-questions'
+import { extendedQuestionsSet1 } from '@/lib/extended-questions-1'
+import { extendedQuestionsSet2 } from '@/lib/extended-questions-2'
+import { extendedQuestionsSet3 } from '@/lib/extended-questions-3'
+import { importantQuestions } from '@/lib/important-questions'
+import { getCombinedQuestions } from '@/lib/utils'
 import { Search, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -14,18 +20,30 @@ export default function SearchPageContent() {
   const initialQuery = searchParams.get('q') || ''
   const [searchQuery, setSearchQuery] = useState(initialQuery)
 
+  // Combine all questions with offset IDs
+  const allQuestions = useMemo(() => {
+    return getCombinedQuestions(
+      questionsData,
+      comprehensiveQuestions,
+      extendedQuestionsSet1,
+      extendedQuestionsSet2,
+      extendedQuestionsSet3,
+      importantQuestions
+    )
+  }, [])
+
   const results = useMemo(() => {
     if (!searchQuery.trim()) return []
     
     const query = searchQuery.toLowerCase()
-    return questionsData.filter(q =>
+    return allQuestions.filter(q =>
       q.question_stem.toLowerCase().includes(query) ||
       q.topic.toLowerCase().includes(query) ||
       q.subtopic.toLowerCase().includes(query) ||
       q.answer_outline.some(outline => outline.toLowerCase().includes(query)) ||
       q.full_solution.toLowerCase().includes(query)
     )
-  }, [searchQuery])
+  }, [searchQuery, allQuestions])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()

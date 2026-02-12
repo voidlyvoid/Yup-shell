@@ -251,7 +251,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="pt-8 border-t border-primary/10 text-center text-foreground/60">
-            <p>© 2024 Better Physics Shell | Made by SANJAYKANTH | All rights reserved. | Made with dedication for Class 12 Physics</p>
+            <p>© 2026 Better Physics Shell | Made by SANJAYKANTH | All rights reserved. | Made with dedication for Class 12 Physics</p>
           </div>
         </div>
       </footer>
